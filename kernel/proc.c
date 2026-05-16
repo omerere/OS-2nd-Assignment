@@ -681,3 +681,22 @@ procdump(void)
     printf("\n");
   }
 }
+
+// added,  Look up a process by PID and return its gid
+int
+get_gid_by_pid(int pid)
+{
+  struct proc *p;
+  extern struct proc proc[NPROC]; // Reference to xv6's global process array
+
+  for(p = proc; p < &proc[NPROC]; p++){
+    acquire(&p->lock);
+    if(p->pid == pid){
+      int gid = p->gid;
+      release(&p->lock);
+      return gid; // Found the process, return its group ID
+    }
+    release(&p->lock);
+  }
+  return -1; // Process not found
+}

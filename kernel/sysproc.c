@@ -89,3 +89,92 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// added the bellow
+
+static uint lcg_state = 1;
+static struct spinlock lcg_lock;
+static int lcg_lock_init = 0;
+
+// Raw kernel functions accessible to other kernel files
+void
+lcg_srand(uint seed)
+{
+  if(lcg_lock_init == 0){
+    initlock(&lcg_lock, "lcg_lock");
+    lcg_lock_init = 1;
+  }
+  acquire(&lcg_lock);
+  lcg_state = seed;
+  release(&lcg_lock);
+}
+
+uint
+lcg_rand(void)
+{
+  uint a = 1664525;
+  uint b = 1013904223;
+  uint res;
+
+  if(lcg_lock_init == 0){
+    initlock(&lcg_lock, "lcg_lock");
+    lcg_lock_init = 1;
+  }
+  acquire(&lcg_lock);
+  lcg_state = a * lcg_state + b;
+  res = lcg_state;
+  release(&lcg_lock);
+
+  return res;
+}
+
+// System call wrappers for userspace access
+uint64
+sys_lcg_srand(void)
+{
+  int seed;
+  argint(0, &seed);
+  lcg_srand((uint)seed);
+  return 0;
+}
+
+uint64
+sys_lcg_rand(void)
+{
+  return lcg_rand();
+}
+
+uint64 sys_setgid(void) { 
+  int gid;
+  argint(0, &gid);
+  myproc()->gid = gid;
+  return 0;
+}
+
+uint64 sys_getgid(void) {
+  return myproc()->gid;
+}
+
+uint64 sys_israeli_create(void) {
+  int favoritism;
+  argint(0, &favoritism);
+  return israeli_create(favoritism);
+}
+
+uint64 sys_israeli_acquire(void) {
+  int lock_id;
+  argint(0, &lock_id);
+  return israeli_acquire(lock_id);
+}
+
+uint64 sys_israeli_release(void) {
+  int lock_id;
+  argint(0, &lock_id);
+  return israeli_release(lock_id);
+}
+
+uint64 sys_israeli_destroy(void) {
+  int lock_id;
+  argint(0, &lock_id);
+  return israeli_destroy(lock_id);
+}

@@ -20,6 +20,10 @@ main()
     kvminit();       // create kernel page table
     kvminithart();   // turn on paging
     procinit();      // process table
+
+    extern void israeli_init(void); // added
+    israeli_init();  // Initialize Israeli locks, added
+
     trapinit();      // trap vectors
     trapinithart();  // install kernel trap vector
     plicinit();      // set up interrupt controller
