@@ -24,8 +24,8 @@ void run_single_race(int c) {
     // Create multiple child processes using fork() and divide into teams
     int total_runners = NUM_TEAMS * RUNNERS_PER_TEAM;
     
+    for (int runner = 0; runner < RUNNERS_PER_TEAM; runner++) {
     for (int team_id = 0; team_id < NUM_TEAMS; team_id++) {
-        for (int runner = 0; runner < RUNNERS_PER_TEAM; runner++) {
             int pid = fork();
             
             if (pid == 0) { // Child process (Runner)
