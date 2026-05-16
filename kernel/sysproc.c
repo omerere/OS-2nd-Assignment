@@ -178,3 +178,43 @@ uint64 sys_israeli_destroy(void) {
   argint(0, &lock_id);
   return israeli_destroy(lock_id);
 }
+
+static int team_scores[10]; // Supports up to 10 teams
+
+uint64 sys_race_init(void) {
+  for(int i = 0; i < 10; i++) {
+    team_scores[i] = 0;
+  }
+  return 0;
+}
+
+uint64 sys_race_inc(void) {
+  int team_id;
+  argint(0, &team_id);
+  
+  if(team_id >= 0 && team_id < 10) {
+    team_scores[team_id]++;
+    return team_scores[team_id];
+  }
+  return -1;
+}
+
+uint64 sys_race_get_max(void) {
+  int max = 0;
+  for(int i = 0; i < 10; i++) {
+    if(team_scores[i] > max) {
+      max = team_scores[i];
+    }
+  }
+  return max;
+}
+
+uint64 sys_race_get_score(void)
+{
+  int team_id;
+  argint(0, &team_id);
+  if(team_id >= 0 && team_id < 10){
+    return team_scores[team_id];
+  }
+  return -1;
+}
