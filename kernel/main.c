@@ -24,6 +24,7 @@ main()
     extern void israeli_init(void); // added
     israeli_init();  // Initialize Israeli locks, added
 
+    lcg_init(); // added
     trapinit();      // trap vectors
     trapinithart();  // install kernel trap vector
     plicinit();      // set up interrupt controller

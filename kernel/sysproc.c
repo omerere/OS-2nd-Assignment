@@ -94,32 +94,23 @@ sys_uptime(void)
 
 static uint lcg_state = 1;
 static struct spinlock lcg_lock;
-static int lcg_lock_init = 0;
+
+void lcg_init(void) {
+  initlock(&lcg_lock, "lcg_lock");
+}
 
 // Raw kernel functions accessible to other kernel files
-void
-lcg_srand(uint seed)
-{
-  if(lcg_lock_init == 0){
-    initlock(&lcg_lock, "lcg_lock");
-    lcg_lock_init = 1;
-  }
+void lcg_srand(uint seed) {
   acquire(&lcg_lock);
   lcg_state = seed;
   release(&lcg_lock);
 }
 
-uint
-lcg_rand(void)
-{
+uint lcg_rand(void) {
   uint a = 1664525;
   uint b = 1013904223;
   uint res;
 
-  if(lcg_lock_init == 0){
-    initlock(&lcg_lock, "lcg_lock");
-    lcg_lock_init = 1;
-  }
   acquire(&lcg_lock);
   lcg_state = a * lcg_state + b;
   res = lcg_state;

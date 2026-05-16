@@ -34,6 +34,8 @@ int race_init(void);
 int race_inc(int);
 int race_get_max(void);
 int race_get_score(int);
+void _lcg_srand(uint);
+uint _lcg_rand(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

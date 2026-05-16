@@ -22,6 +22,8 @@
 #define SYS_close  21
 #define SYS_lcg_srand  22
 #define SYS_lcg_rand   23
+#define SYS__lcg_srand 22
+#define SYS__lcg_rand  23
 #define SYS_setgid          24
 #define SYS_getgid          25
 #define SYS_israeli_create  26
